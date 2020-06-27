@@ -23,15 +23,21 @@ async function servePhotos(req, res) {
     const apiUrl = getUrl(reqSol, reqCamera, reqPage)
     fetch(apiUrl)
       .then((res) => res.json())
-      .then((json) => res.send(json))
+      .then((json) => {
+        res.send(json)
+        /*
+        const fullArray = json.photos
+        const photosArray = fullArray.map((element) => element.img_src)
+        res.send(JSON.stringify(photosArray)) */
+      })
   } catch (e) {
-    console.log(`Error: ${e.message}`)
+    res.send(`Error: ${e.message}`)
   }
 }
 app.get("/api/photos", servePhotos)
 app.get("/", (req, res) => {
   const cameraString = `&camera=fhaz`
   const apiKeyString = `&api_key=${process.env.NASA_API_KEY}`
-  const url = `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=0${cameraString}${apiKeyString}`
+  const url = `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=0&page=1${cameraString}${apiKeyString}`
   res.send(`${url}`)
 })
