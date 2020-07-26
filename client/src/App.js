@@ -10,10 +10,11 @@ function App() {
     totalPhotos: null,
     maxSol: null,
   })
-  function getDataCountFromManifest() {
+  function getDataCountFromManifest(manifestData) {
+    const photoManifest = manifestData.photo_manifest
     return {
-      maxSol: manifestData.max_sol,
-      totalPhotos: manifestData.total_photos,
+      maxSol: photoManifest.max_sol,
+      totalPhotos: photoManifest.total_photos,
     }
   }
   const [manifestData, setManifestData] = useState({})
@@ -21,8 +22,8 @@ function App() {
   useEffect(() => {
     async function getManifestData() {
       const response = await fetch(`http://localhost:5000/api/manifest`)
-      const jsonData = await response.json()
-      setManifestData(jsonData)
+      const manifestData = await response.json()
+      setManifestData(manifestData)
       setDataCount(getDataCountFromManifest(manifestData))
     }
     getManifestData()
@@ -35,6 +36,15 @@ function App() {
   return (
     <div className="appContainer">
       <h1 className="appTitle">Mars Rover Photo Display</h1>
+      <div>
+        {dataCount.totalPhotos
+          ? `Search among ${dataCount.totalPhotos} photos!`
+          : ""}
+      </div>
+      <div>
+        {dataCount.maxSol ? `Choose an sol from 0 to ${dataCount.maxSol}` : ""}
+      </div>
+
       <h2 className="roverTitle">Curiosity Rover</h2>
       <div className="appFormContainer">
         <form onSubmit={handleSubmit}>
