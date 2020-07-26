@@ -1,50 +1,40 @@
 import React, { useState, useEffect } from "react"
 import "./App.css"
 import useForm from "./components/useForm"
+import { isinRange } from "./utlity/isInRange"
+import DataCountDisplay from "./components/DataCountDisplay"
 function App() {
   const [roverFormValues, setRoverFormValues] = useForm({
     solNum: 0,
     cameraType: "any",
   })
-  const [dataCount, setDataCount] = useState({
-    totalPhotos: null,
-    maxSol: null,
-  })
-  function getDataCountFromManifest(manifestData) {
-    const photoManifest = manifestData.photo_manifest
-    return {
-      maxSol: photoManifest.max_sol,
-      totalPhotos: photoManifest.total_photos,
-    }
-  }
-  const [manifestData, setManifestData] = useState({})
+
+  const [manifestData, setManifestData] = useState(null)
 
   useEffect(() => {
     async function getManifestData() {
       const response = await fetch(`http://localhost:5000/api/manifest`)
       const manifestData = await response.json()
       setManifestData(manifestData)
-      setDataCount(getDataCountFromManifest(manifestData))
     }
     getManifestData()
   }, [])
 
   function handleSubmit(e) {
     e.preventDefault()
-    //console.log(roverFormValues)
+    console.log(roverFormValues)
   }
   return (
     <div className="appContainer">
       <h1 className="appTitle">Mars Rover Photo Display</h1>
-      <div>
-        {dataCount.totalPhotos
-          ? `Search among ${dataCount.totalPhotos} photos!`
-          : ""}
-      </div>
-      <div>
-        {dataCount.maxSol ? `Choose an sol from 0 to ${dataCount.maxSol}` : ""}
-      </div>
-
+      {manifestData ? (
+        <DataCountDisplay
+          totalPhotos={manifestData.photo_manifest.totalPhotos}
+          maxSol={manifestData.photo_manifest.max_sol}
+        />
+      ) : (
+        ""
+      )}
       <h2 className="roverTitle">Curiosity Rover</h2>
       <div className="appFormContainer">
         <form onSubmit={handleSubmit}>
