@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import "./App.css"
 import useForm from "./components/useForm"
 function App() {
@@ -6,6 +6,28 @@ function App() {
     solNum: 0,
     cameraType: "any",
   })
+  const [dataCount, setDataCount] = useState({
+    totalPhotos: null,
+    maxSol: null,
+  })
+  function getDataCountFromManifest() {
+    return {
+      maxSol: manifestData.max_sol,
+      totalPhotos: manifestData.total_photos,
+    }
+  }
+  const [manifestData, setManifestData] = useState({})
+
+  useEffect(() => {
+    async function getManifestData() {
+      const response = await fetch(`http://localhost:5000/api/manifest`)
+      const jsonData = await response.json()
+      setManifestData(jsonData)
+      setDataCount(getDataCountFromManifest(manifestData))
+    }
+    getManifestData()
+  }, [])
+
   function handleSubmit(e) {
     e.preventDefault()
     //console.log(roverFormValues)
