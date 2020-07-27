@@ -36,15 +36,18 @@ function App() {
       !isInRange(roverFormValues.solNum, 0, manifestData.photo_manifest.max_sol)
     ) {
       isValid = false
-      solError = `sol value must be 0 - ${manifestData.photo_manifest.max_sol}`
+      solError = `sol value must be between 0 and ${manifestData.photo_manifest.max_sol}`
     }
-    if (!solError) setFormErrors({ ...formErrors, solError })
+    console.log(`solError: ${solError}`)
+    if (solError) setFormErrors({ ...formErrors, solError })
+    console.log(formErrors)
     return isValid
   }
   function handleSubmit(e) {
     e.preventDefault()
-    if (!manifestData) return //handle submit does nothing until manifestData has loaded
-    const isValid = validateState()
+    if (!manifestData || !validateState()) return //handle submit does nothing until manifestData has loaded
+    //at this point, errors have been solved, so clear the errors
+    setFormErrors(initialErrors)
     const pageNum = 1
     const params = new URLSearchParams({
       sol: roverFormValues.solNum,
@@ -78,6 +81,7 @@ function App() {
               value={roverFormValues.solNum}
               onChange={setRoverFormValues}
             ></input>
+            <div style={{ color: "red" }}>{formErrors.solError}</div>
           </div>
           <div>
             <div>
@@ -101,7 +105,8 @@ function App() {
           <button type="submit">Find Photos</button>
         </form>
       </div>
-      <div>
+
+      {/* <div>
         {(manifestData &&
           isInRange(
             roverFormValues.solNum,
@@ -109,7 +114,7 @@ function App() {
             manifestData.photo_manifest.max_sol
           )) ||
           "Sol is not in the proper range"}
-      </div>
+      </div> */}
 
       {photoData ? <PhotoDisplay photoData={photoData} /> : ""}
     </div>
