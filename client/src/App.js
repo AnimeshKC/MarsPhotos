@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react"
 import "./App.css"
 import useForm from "./components/useForm"
-import { isinRange } from "./utlity/isInRange"
 import DataCountDisplay from "./components/DataCountDisplay"
+import PhotoDisplay from "./components/PhotoDisplay"
+import isInRange from "./utlity/isInRange"
+
+const initialErrors = { solError: "" }
 function App() {
   const [roverFormValues, setRoverFormValues] = useForm({
     solNum: 0,
     cameraType: "any",
   })
+  const [formErrors, setFormErrors] = useState(initialErrors)
 
   const [manifestData, setManifestData] = useState(null)
-
+  const [photoData, setPhotoData] = useState(null)
   useEffect(() => {
     async function getManifestData() {
       const response = await fetch(`http://localhost:5000/api/manifest`)
@@ -19,17 +23,43 @@ function App() {
     }
     getManifestData()
   }, [])
-
+  async function fetchPhotoData(url) {
+    const response = await fetch(url)
+    const data = await response.json()
+    setPhotoData(data)
+  }
+  function validateState() {
+    //this function is structured in case additional validation is needed in the future
+    let isValid = true //true unless there's an error
+    let solError = ""
+    if (
+      !isInRange(roverFormValues.solNum, 0, manifestData.photo_manifest.max_sol)
+    ) {
+      isValid = false
+      solError = `sol value must be 0 - ${manifestData.photo_manifest.max_sol}`
+    }
+    if (!solError) setFormErrors({ ...formErrors, solError })
+    return isValid
+  }
   function handleSubmit(e) {
     e.preventDefault()
-    console.log(roverFormValues)
+    if (!manifestData) return //handle submit does nothing until manifestData has loaded
+    const isValid = validateState()
+    const pageNum = 1
+    const params = new URLSearchParams({
+      sol: roverFormValues.solNum,
+      camera: roverFormValues.cameraType,
+      page: pageNum,
+    })
+    const url = `http://localhost:5000/api/photos?${params.toString()}`
+    fetchPhotoData(url)
   }
   return (
     <div className="appContainer">
       <h1 className="appTitle">Mars Rover Photo Display</h1>
       {manifestData ? (
         <DataCountDisplay
-          totalPhotos={manifestData.photo_manifest.totalPhotos}
+          totalPhotos={manifestData.photo_manifest.total_photos}
           maxSol={manifestData.photo_manifest.max_sol}
         />
       ) : (
@@ -68,9 +98,20 @@ function App() {
               <option value="navcam">Navigation Camera</option>
             </select>
           </div>
-          <button type="submit">Submit</button>
+          <button type="submit">Find Photos</button>
         </form>
       </div>
+      <div>
+        {(manifestData &&
+          isInRange(
+            roverFormValues.solNum,
+            0,
+            manifestData.photo_manifest.max_sol
+          )) ||
+          "Sol is not in the proper range"}
+      </div>
+
+      {photoData ? <PhotoDisplay photoData={photoData} /> : ""}
     </div>
   )
 }
