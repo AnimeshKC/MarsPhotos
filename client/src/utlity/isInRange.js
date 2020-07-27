@@ -1,5 +1,4 @@
 function isinRange(value, min, max) {
-  if (value >= min && value <= max) return true
-  return false
+  return value >= min && value <= max
 }
 export default isinRange
