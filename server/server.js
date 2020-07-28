@@ -37,16 +37,16 @@ function servePhotos(req, res) {
   const reqCamera = req.query.camera || "any"
   const reqPage = req.query.page || 1
   const apiUrl = getPhotoUrl(reqSol, reqCamera, reqPage)
+  const testError = new Error("Test Error")
   fetch(apiUrl)
     .then((res) => res.json())
     .then((json) => {
-      //res.send(json)
       const photosArray = json.photos.map((element) => {
         return { id: element.id, img_src: element.img_src }
       })
       res.send(JSON.stringify(photosArray))
     })
-    .catch((error) => res.send(error))
+    .catch((error) => res.send(error.toString()))
 }
 
 function getManifest(req, res) {
@@ -54,15 +54,8 @@ function getManifest(req, res) {
   fetch(apiURL)
     .then((res) => res.json())
     .then((json) => res.send(json))
+    .catch((error) => res.send(error.toString()))
 }
 
 app.get("/api/photos", servePhotos)
 app.get("/api/manifest", getManifest)
-
-//will not need eventually
-app.get("/", (req, res) => {
-  const cameraString = `&camera=fhaz`
-  const apiKeyString = `&api_key=${process.env.NASA_API_KEY}`
-  const url = `https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=0&page=1${cameraString}${apiKeyString}`
-  res.send(`${process.env.NASA_API_KEY}`)
-})

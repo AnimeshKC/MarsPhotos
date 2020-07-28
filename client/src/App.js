@@ -15,6 +15,7 @@ function App() {
   const [formErrors, setFormErrors] = useState(initialErrors)
   const [photoRenderRequired, setPhotoRenderRequired] = useState(false)
   const [manifestData, setManifestData] = useState(null)
+  const [manifestError, setManifestError] = useState("")
   const {
     searchLoading,
     searchError,
@@ -45,9 +46,15 @@ function App() {
   )
   useEffect(() => {
     async function getManifestData() {
-      const response = await fetch(`http://localhost:5000/api/manifest`)
-      const manifestData = await response.json()
-      setManifestData(manifestData)
+      try {
+        const response = await fetch(`http://localhost:5000/api/manifest`)
+        const manifestData = await response.json()
+        if (!manifestData.photo_manifest)
+          throw new Error("Manifest Data Retrieval Error")
+        setManifestData(manifestData)
+      } catch (e) {
+        setManifestError("Manifest Data could not be retrieved")
+      }
     }
     getManifestData()
   }, [])
@@ -118,6 +125,8 @@ function App() {
           totalPhotos={manifestData.photo_manifest.total_photos}
           maxSol={manifestData.photo_manifest.max_sol}
         />
+      ) : manifestError ? (
+        "CANNOT RETRIEVE DATA"
       ) : (
         "...loading"
       )}
@@ -157,7 +166,8 @@ function App() {
           </div>
           <button type="submit">Find Photos</button>
         </form>
-        <div className="strongBolded"> {searchError} </div>
+        <div className="strongBolded redText"> {searchError} </div>
+        <div className="strongBolded redText">{manifestError}</div>
       </div>
       {!searchError && photoData && pageNum !== null ? displayPhoto() : ""}
       <div className="strongBolded">
