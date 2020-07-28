@@ -1,4 +1,5 @@
-if (process.env.NODE_ENV === "development") require("dotenv").config()
+const env = process.env.NODE_ENV || "development"
+if (env === "development") require("dotenv").config()
 
 const path = require("path")
 const express = require("express")
@@ -40,7 +41,8 @@ function servePhotos(req, res) {
     .then((res) => res.json())
     .then((json) => {
       const photosArray = json.photos.map((element) => {
-        return { id: element.id, img_src: element.img_src }
+        const httpsString = element.img_src.replace("http", "https")
+        return { id: element.id, img_src: httpsString }
       })
       res.send(JSON.stringify(photosArray))
     })
