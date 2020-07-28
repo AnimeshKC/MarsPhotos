@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import "./App.css"
 import useForm from "./components/useForm"
+import usePhotoSearch from "./components/usePhotoSearch"
 import DataCountDisplay from "./components/DataCountDisplay"
 import isInRange from "./utlity/isInRange"
 
@@ -12,9 +13,36 @@ function App() {
   })
   const [pageNum, setPageNum] = useState(null)
   const [formErrors, setFormErrors] = useState(initialErrors)
-
+  const [photoRenderRequired, setPhotoRenderRequired] = useState(false)
   const [manifestData, setManifestData] = useState(null)
-  const [photoData, setPhotoData] = useState(null)
+  const {
+    searchLoading,
+    searchError,
+    photoData,
+    hasMore,
+    setPhotoData,
+  } = usePhotoSearch(
+    roverFormValues.solNum,
+    roverFormValues.cameraType,
+    pageNum,
+    photoRenderRequired,
+    setPhotoRenderRequired
+  )
+  const observer = useRef()
+  const lastPhotoRef = useCallback(
+    (node) => {
+      if (searchLoading) return
+      if (observer.current) observer.current.disconnect()
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPageNum((prevPageNum) => prevPageNum + 1)
+          setPhotoRenderRequired(true)
+        }
+      })
+      if (node) observer.current.observe(node)
+    },
+    [searchLoading, hasMore]
+  )
   useEffect(() => {
     async function getManifestData() {
       const response = await fetch(`http://localhost:5000/api/manifest`)
@@ -23,11 +51,6 @@ function App() {
     }
     getManifestData()
   }, [])
-  async function fetchPhotoData(url) {
-    const response = await fetch(url)
-    const data = await response.json()
-    setPhotoData(data)
-  }
   function validateState() {
     //this function is structured in case additional validation is needed in the future
     let isValid = true //true unless there's an error
@@ -37,6 +60,7 @@ function App() {
     ) {
       isValid = false
       solError = `sol value must be between 0 and ${manifestData.photo_manifest.max_sol}`
+      setPageNum(null)
     }
     console.log(`solError: ${solError}`)
     if (solError) setFormErrors({ ...formErrors, solError })
@@ -48,23 +72,30 @@ function App() {
     if (!manifestData || !validateState()) return
     //at this point, there are no more errrors, so clear them
     setFormErrors(initialErrors)
-    const pageNum = 1
-    const params = new URLSearchParams({
-      sol: roverFormValues.solNum,
-      camera: roverFormValues.cameraType,
-      page: pageNum,
-    })
-    const url = `http://localhost:5000/api/photos?${params.toString()}`
-    fetchPhotoData(url)
+    setPhotoData([]) //reset photo data
+    setPageNum(1)
+    setPhotoRenderRequired(true)
   }
   function displayPhoto() {
-    const styleClass = photoData.length ? "photoContainer" : "noPhotos"
+    const styleClass = photoData.length ? "photoContainer" : "strongBolded"
+    const messageString = searchLoading ? "" : "No photos found"
     return (
       <div className={styleClass}>
         {photoData.length
-          ? photoData.map((element) => {
+          ? photoData.map((element, index) => {
               const altString = `photo with id ${element.id}`
-
+              if (photoData.length === index + 1) {
+                return (
+                  <img
+                    width="300px"
+                    height="300px"
+                    ref={lastPhotoRef}
+                    alt={altString}
+                    key={element.id}
+                    src={element.img_src}
+                  ></img>
+                )
+              }
               return (
                 <img
                   width="300px"
@@ -75,7 +106,7 @@ function App() {
                 ></img>
               )
             })
-          : "No photos found"}
+          : messageString}
       </div>
     )
   }
@@ -88,7 +119,7 @@ function App() {
           maxSol={manifestData.photo_manifest.max_sol}
         />
       ) : (
-        ""
+        "...loading"
       )}
       <h2 className="roverTitle">Curiosity Rover</h2>
       <div className="appFormContainer">
@@ -126,8 +157,12 @@ function App() {
           </div>
           <button type="submit">Find Photos</button>
         </form>
+        <div className="strongBolded"> {searchError} </div>
       </div>
-      {photoData ? displayPhoto() : ""}
+      {!searchError && photoData && pageNum !== null ? displayPhoto() : ""}
+      <div className="strongBolded">
+        {searchLoading && pageNum && "...Loading"}
+      </div>
     </div>
   )
 }
