@@ -24,6 +24,8 @@ React.js, Node.js, Express.js
 
 ## Dependencies
 This application requires the following npm packages: [cors][cors], [express][express], [nodefetch][nodefetch], and [dotenv][dotenv]
+
+
 [deployedApp]: https://mars-photo-animesh.herokuapp.com/
 [nasaAPIs]: https://api.nasa.gov/
 [cors]: https://www.npmjs.com/package/cors
