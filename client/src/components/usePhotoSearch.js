@@ -24,6 +24,7 @@ export default function usePhotoSearch(
     try {
       const response = await fetch(url)
       const data = await response.json()
+      if (!Array.isArray(data)) throw new Error("data retrieval error")
       setPhotoData([...photoData, ...data])
       const nextResponse = await fetch(nexturl)
       const nextData = await nextResponse.json()
@@ -31,7 +32,7 @@ export default function usePhotoSearch(
       console.log(nextData)
       nextData.length ? setHasMore(true) : setHasMore(false)
     } catch (e) {
-      setSearchError(e.toString())
+      setSearchError("Photo Data could not be retrieved")
     }
   }
 
