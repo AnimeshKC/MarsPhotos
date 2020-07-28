@@ -5,17 +5,30 @@ import usePhotoSearch from "./components/usePhotoSearch"
 import DataCountDisplay from "./components/DataCountDisplay"
 import isInRange from "./utlity/isInRange"
 
-const initialErrors = { solError: "" }
+const initialFormErrors = { solError: "" }
+const initialRoverFormValues = { solNum: 0, cameraType: "any" }
+const initialStates = {
+  initialFormErrors,
+  initialRoverFormValues,
+  photoRenderRequired: false,
+  manifestData: null,
+  manifestError: "",
+  pageNum: null,
+}
 function App() {
-  const [roverFormValues, setRoverFormValues] = useForm({
-    solNum: 0,
-    cameraType: "any",
-  })
-  const [pageNum, setPageNum] = useState(null)
-  const [formErrors, setFormErrors] = useState(initialErrors)
-  const [photoRenderRequired, setPhotoRenderRequired] = useState(false)
-  const [manifestData, setManifestData] = useState(null)
-  const [manifestError, setManifestError] = useState("")
+  //App state
+  const [roverFormValues, setRoverFormValues] = useForm(
+    initialStates.initialRoverFormValues
+  )
+  const [pageNum, setPageNum] = useState(initialStates.pageNum)
+  const [formErrors, setFormErrors] = useState(initialStates.initialFormErrors)
+  const [photoRenderRequired, setPhotoRenderRequired] = useState(
+    initialStates.photoRenderRequired
+  )
+  const [manifestData, setManifestData] = useState(initialStates.manifestData)
+  const [manifestError, setManifestError] = useState(
+    initialStates.manifestError
+  )
   const {
     searchLoading,
     searchError,
@@ -29,6 +42,8 @@ function App() {
     photoRenderRequired,
     setPhotoRenderRequired
   )
+
+  //code to handle infinite page scrolling
   const observer = useRef()
   const lastPhotoRef = useCallback(
     (node) => {
@@ -47,7 +62,7 @@ function App() {
   useEffect(() => {
     async function getManifestData() {
       try {
-        const response = await fetch(`http://localhost:5000/api/manifest`)
+        const response = await fetch(`/api/manifest`)
         const manifestData = await response.json()
         if (!manifestData.photo_manifest)
           throw new Error("Manifest Data Retrieval Error")
@@ -69,17 +84,16 @@ function App() {
       solError = `sol value must be between 0 and ${manifestData.photo_manifest.max_sol}`
       setPageNum(null)
     }
-    console.log(`solError: ${solError}`)
     if (solError) setFormErrors({ ...formErrors, solError })
-    console.log(formErrors)
     return isValid
   }
+
   function handleSubmit(e) {
     e.preventDefault()
     if (!manifestData || !validateState()) return
     //at this point, there are no more errrors, so clear them
-    setFormErrors(initialErrors)
-    setPhotoData([]) //reset photo data
+    setFormErrors(initialFormErrors)
+    setPhotoData([]) //reset photo data upon each submit
     setPageNum(1)
     setPhotoRenderRequired(true)
   }
@@ -164,7 +178,11 @@ function App() {
               <option value="navcam">Navigation Camera</option>
             </select>
           </div>
-          <button type="submit">Find Photos</button>
+          <div className="buttonContainer">
+            <button className="buttonInstance" type="submit">
+              Find Photos
+            </button>
+          </div>
         </form>
         <div className="strongBolded redText"> {searchError} </div>
         <div className="strongBolded redText">{manifestError}</div>

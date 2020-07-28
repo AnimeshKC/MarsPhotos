@@ -18,6 +18,12 @@
   font-weight: 900;
   font-size: 30px;
 }
+.buttonContainer {
+  margin: 10px;
+}
+.buttonInstance {
+  margin: 10px;
+}
 .redText {
   color: red;
 }

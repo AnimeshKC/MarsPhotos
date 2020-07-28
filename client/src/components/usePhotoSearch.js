@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 
 function getApiUrl(sol, cameraType, page) {
   const params = new URLSearchParams({
@@ -6,7 +6,7 @@ function getApiUrl(sol, cameraType, page) {
     camera: cameraType,
     page: page,
   })
-  const url = `http://localhost:5000/api/photos?${params.toString()}`
+  const url = `/api/photos?${params.toString()}`
   return url
 }
 export default function usePhotoSearch(
@@ -20,25 +20,21 @@ export default function usePhotoSearch(
   const [searchError, setSearchError] = useState("")
   const [photoData, setPhotoData] = useState([])
   const [hasMore, setHasMore] = useState(false)
-  async function fetchPhotoData(url, nexturl) {
-    try {
-      const response = await fetch(url)
-      const data = await response.json()
-      if (!Array.isArray(data)) throw new Error("data retrieval error")
-      setPhotoData([...photoData, ...data])
-      const nextResponse = await fetch(nexturl)
-      const nextData = await nextResponse.json()
-      console.log(`Next data:`)
-      console.log(nextData)
-      nextData.length ? setHasMore(true) : setHasMore(false)
-    } catch (e) {
-      setSearchError("Photo Data could not be retrieved")
-    }
-  }
 
   useEffect(() => {
-    console.log(photoRenderRequired)
-
+    async function fetchPhotoData(url, nexturl) {
+      try {
+        const response = await fetch(url)
+        const data = await response.json()
+        if (!Array.isArray(data)) throw new Error("data retrieval error")
+        setPhotoData([...photoData, ...data])
+        const nextResponse = await fetch(nexturl)
+        const nextData = await nextResponse.json()
+        nextData.length ? setHasMore(true) : setHasMore(false)
+      } catch (e) {
+        setSearchError("Photo Data could not be retrieved")
+      }
+    }
     if (page !== null && photoRenderRequired) {
       async function executePhotoEffect() {
         try {
@@ -55,7 +51,13 @@ export default function usePhotoSearch(
 
       executePhotoEffect()
     }
-  }, [sol, cameraType, page, photoRenderRequired, setPhotoRenderRequired])
-  console.log(`hasMore: ${hasMore}`)
+  }, [
+    sol,
+    cameraType,
+    page,
+    photoRenderRequired,
+    setPhotoRenderRequired,
+    photoData,
+  ])
   return { searchLoading, searchError, photoData, hasMore, setPhotoData }
 }
