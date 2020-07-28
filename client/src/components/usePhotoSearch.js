@@ -27,7 +27,16 @@ export default function usePhotoSearch(
         const response = await fetch(url)
         const data = await response.json()
         if (!Array.isArray(data)) throw new Error("data retrieval error")
-        setPhotoData([...photoData, ...data])
+        setPhotoData((prevData) => {
+          //because of async complications, make sure the data is not duplicated
+          const combinedArray = [...prevData, ...data]
+          const idArray = [
+            ...new Set(combinedArray.map((element) => element.id)),
+          ]
+          return idArray.map((id) =>
+            combinedArray.find((element) => element.id === id)
+          )
+        })
         const nextResponse = await fetch(nexturl)
         const nextData = await nextResponse.json()
         nextData.length ? setHasMore(true) : setHasMore(false)

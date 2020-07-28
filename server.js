@@ -11,6 +11,7 @@ const cors = require("cors")
 app.use(express.json())
 app.use(cors()) //this API shouldn't be restricted
 
+//limit a request to 10 seconds
 const TIMEOUT_MS = 10000
 app.use((req, res, next) => {
   res.setTimeout(TIMEOUT_MS, () => {

@@ -65,6 +65,8 @@ function App() {
         const response = await fetch(`/api/manifest`)
         const manifestData = await response.json()
         if (!manifestData.photo_manifest)
+          //if manifestData is undefined, an
+          //object without photo_manifest, or not an object, this will throw an error
           throw new Error("Manifest Data Retrieval Error")
         setManifestData(manifestData)
       } catch (e) {
@@ -142,7 +144,7 @@ function App() {
       ) : manifestError ? (
         "CANNOT RETRIEVE DATA"
       ) : (
-        "...loading"
+        "...LOADING Manifest Data"
       )}
       <h2 className="roverTitle">Curiosity Rover</h2>
       <div className="appFormContainer">
@@ -191,6 +193,27 @@ function App() {
       <div className="strongBolded">
         {searchLoading && pageNum && "...Loading"}
       </div>
+      <h2>
+        <div className="footerLink">
+          <a
+            href="https://github.com/AnimeshKC"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Animesh KC
+          </a>
+        </div>
+        <div className="footerLink">
+          <a
+            className="footerLink"
+            href="https://api.nasa.gov/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            NASA APIs
+          </a>
+        </div>
+      </h2>
     </div>
   )
 }
