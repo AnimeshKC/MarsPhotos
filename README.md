@@ -25,6 +25,15 @@ React.js, Node.js, Express.js
 ## Dependencies
 This application requires the following npm packages: [cors][cors], [express][express], [nodefetch][nodefetch], and [dotenv][dotenv]
 
+Aside from these, this project only depends on node.js and the [create-react-app starter][CRA]
+
+## Steps to Run Locally
+1. Clone this project
+2. Obtain a [Nasa API Key][nasaAPIs] for the Mars Rover 
+3. Create a file ".env" in the root directory, that follows the format of ".envExample", using the obtained API Key
+4. In both the client folder and the root directory, type "npm install" in the command line to install the necessary files
+5. While in Development, run the server by typing "npm run devStart", and run the react client by typing "npm start" within the client folder
+
 
 [deployedApp]: https://mars-photo-animesh.herokuapp.com/
 [nasaAPIs]: https://api.nasa.gov/
@@ -32,3 +41,4 @@ This application requires the following npm packages: [cors][cors], [express][ex
 [express]: https://www.npmjs.com/package/express
 [nodefetch]: https://www.npmjs.com/package/node-fetch
 [dotenv]: https://www.npmjs.com/package/dotenv
+[CRA]: https://reactjs.org/docs/create-a-new-react-app.html
