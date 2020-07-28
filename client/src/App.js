@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import "./App.css"
 import useForm from "./components/useForm"
 import DataCountDisplay from "./components/DataCountDisplay"
-import PhotoDisplay from "./components/PhotoDisplay"
 import isInRange from "./utlity/isInRange"
 
 const initialErrors = { solError: "" }
@@ -11,6 +10,7 @@ function App() {
     solNum: 0,
     cameraType: "any",
   })
+  const [pageNum, setPageNum] = useState(null)
   const [formErrors, setFormErrors] = useState(initialErrors)
 
   const [manifestData, setManifestData] = useState(null)
@@ -45,8 +45,8 @@ function App() {
   }
   function handleSubmit(e) {
     e.preventDefault()
-    if (!manifestData || !validateState()) return //handle submit does nothing until manifestData has loaded
-    //at this point, errors have been solved, so clear the errors
+    if (!manifestData || !validateState()) return
+    //at this point, there are no more errrors, so clear them
     setFormErrors(initialErrors)
     const pageNum = 1
     const params = new URLSearchParams({
@@ -56,6 +56,28 @@ function App() {
     })
     const url = `http://localhost:5000/api/photos?${params.toString()}`
     fetchPhotoData(url)
+  }
+  function displayPhoto() {
+    const styleClass = photoData.length ? "photoContainer" : "noPhotos"
+    return (
+      <div className={styleClass}>
+        {photoData.length
+          ? photoData.map((element) => {
+              const altString = `photo with id ${element.id}`
+
+              return (
+                <img
+                  width="300px"
+                  height="300px"
+                  alt={altString}
+                  key={element.id}
+                  src={element.img_src}
+                ></img>
+              )
+            })
+          : "No photos found"}
+      </div>
+    )
   }
   return (
     <div className="appContainer">
@@ -105,18 +127,7 @@ function App() {
           <button type="submit">Find Photos</button>
         </form>
       </div>
-
-      {/* <div>
-        {(manifestData &&
-          isInRange(
-            roverFormValues.solNum,
-            0,
-            manifestData.photo_manifest.max_sol
-          )) ||
-          "Sol is not in the proper range"}
-      </div> */}
-
-      {photoData ? <PhotoDisplay photoData={photoData} /> : ""}
+      {photoData ? displayPhoto() : ""}
     </div>
   )
 }

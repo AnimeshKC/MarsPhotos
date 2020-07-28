@@ -7,3 +7,14 @@
 .roverTitle {
   margin-top: 40px;
 }
+.photoContainer {
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-gap: 1rem;
+  padding: 50px 0px;
+}
+.noPhotos {
+  font-weight: 900;
+  font-size: 30px;
+}
