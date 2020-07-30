@@ -42,7 +42,9 @@ function servePhotos(req, res) {
     .then((res) => res.json())
     .then((json) => {
       const photosArray = json.photos.map((element) => {
-        const httpsString = element.img_src.replace("http", "https")
+        const httpsString = element.img_src.includes("https")
+          ? element.img_src
+          : element.img_src.replace("http", "https")
         return { id: element.id, img_src: httpsString }
       })
       res.send(JSON.stringify(photosArray))
