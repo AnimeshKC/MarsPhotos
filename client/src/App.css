@@ -1,33 +1,83 @@
-.appContainer {
-  text-align: center;
+body {
+  margin: 0px;
+  padding: 0px;
+}
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: rgba(102, 85, 85, 0.822);
+}
+.introductionContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.siteContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.textAndFormContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .appTitle {
   margin-top: 20px;
 }
 .roverTitle {
-  margin-top: 40px;
+  margin: 20px auto;
+  font-size: 2em;
 }
 .photoContainer {
   display: grid;
-  align-items: center;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   grid-gap: 1rem;
   padding: 50px 0px;
 }
+.photoContainer img {
+  align-self: center;
+  justify-self: center;
+}
+
 .strongBolded {
   font-weight: 900;
   font-size: 30px;
 }
 .buttonContainer {
-  margin: 10px;
+  margin: 10px 0px;
 }
 .buttonInstance {
-  margin: 10px;
+  margin: 10px 0px;
+  font-size: 1.2em;
+  background-color: #007bff;
 }
 .redText {
   color: red;
 }
-
-.footerLink {
+.appFormContainer {
+  margin-top: 20px;
+  padding-left: 4.5em;
+  padding-right: 4.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: #fff;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  left: 4.5em;
+  width: 100%;
+}
+.form > label {
+  display: block;
+  font-weight: 700;
   margin: 10px 0;
+}
+.form > input {
+  display: block;
 }

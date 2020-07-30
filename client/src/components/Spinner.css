@@ -1,0 +1,13 @@
+.spinner {
+  border: 3px solid lightgreen;
+  border-top-color: coral;
+  animation: spinner 0.7s linear infinite;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}

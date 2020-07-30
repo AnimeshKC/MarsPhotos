@@ -4,6 +4,8 @@ import useForm from "./components/useForm"
 import usePhotoSearch from "./components/usePhotoSearch"
 import DataCountDisplay from "./components/DataCountDisplay"
 import isInRange from "./utlity/isInRange"
+import Footer from "./components/Footer"
+import Spinner from "./components/Spinner"
 
 const initialFormErrors = { solError: "" }
 const initialRoverFormValues = { solNum: 0, cameraType: "any" }
@@ -80,6 +82,7 @@ function App() {
     let isValid = true //true unless there's an error
     let solError = ""
     if (
+      roverFormValues.solNum === "" ||
       !isInRange(roverFormValues.solNum, 0, manifestData.photo_manifest.max_sol)
     ) {
       isValid = false
@@ -110,6 +113,7 @@ function App() {
               if (photoData.length === index + 1) {
                 return (
                   <img
+                    className="photo"
                     width="300px"
                     height="300px"
                     ref={lastPhotoRef}
@@ -134,86 +138,69 @@ function App() {
     )
   }
   return (
-    <div className="appContainer">
-      <h1 className="appTitle">Mars Rover Photo Display</h1>
-      {manifestData ? (
-        <DataCountDisplay
-          totalPhotos={manifestData.photo_manifest.total_photos}
-          maxSol={manifestData.photo_manifest.max_sol}
-        />
-      ) : manifestError ? (
-        "CANNOT RETRIEVE DATA"
-      ) : (
-        "...LOADING Manifest Data"
-      )}
-      <h2 className="roverTitle">Curiosity Rover</h2>
-      <div className="appFormContainer">
-        <form onSubmit={handleSubmit}>
-          <div>
-            <div>
-              <label>Sol</label>
-            </div>
-            <input
-              type="number"
-              name="solNum"
-              value={roverFormValues.solNum}
-              onChange={setRoverFormValues}
-            ></input>
-            <div style={{ color: "red" }}>{formErrors.solError}</div>
+    <div className="pageContainer">
+      <div className="siteContent">
+        <div className="textAndFormContainer">
+          <div className="introductionContainer">
+            <h1 className="appTitle">Mars Rover Photo Display</h1>
+            {manifestData ? (
+              <DataCountDisplay
+                totalPhotos={manifestData.photo_manifest.total_photos}
+                maxSol={manifestData.photo_manifest.max_sol}
+              />
+            ) : manifestError ? (
+              "CANNOT RETRIEVE DATA"
+            ) : (
+              // "...LOADING Manifest Data"
+              <Spinner />
+            )}
           </div>
-          <div>
-            <div>
-              <label>Camera</label>
-            </div>
-            <select
-              name="cameraType"
-              value={setRoverFormValues.cameraType}
-              onChange={setRoverFormValues}
-            >
-              <option value="any"> Any Camera</option>
-              <option value="fhaz">Front Hazard Avoidance Camera</option>
-              <option value="rhaz"> Rear Hazard Avoidance Camera</option>
-              <option value="mast">Mast Camera</option>
-              <option value="chemcam">Chemistry and Camera Complex</option>
-              <option value="mahli">Mars Hand Lens Imager</option>
-              <option value="mardi">Mars Descent Imager</option>
-              <option value="navcam">Navigation Camera</option>
-            </select>
+
+          <div className="appFormContainer">
+            <h2 className="roverTitle">Curiosity Rover</h2>
+
+            <form onSubmit={handleSubmit} className="form">
+              <label htmlFor="sol">Sol</label>
+              <input
+                type="number"
+                name="solNum"
+                value={roverFormValues.solNum}
+                onChange={setRoverFormValues}
+                id="sol"
+              ></input>
+              <div className="redText">{formErrors.solError}</div>
+              <label htmlFor="camera">Camera</label>
+              <select
+                name="cameraType"
+                id="camera"
+                value={setRoverFormValues.cameraType}
+                onChange={setRoverFormValues}
+              >
+                <option value="any"> Any Camera</option>
+                <option value="fhaz">Front Hazard Avoidance Camera</option>
+                <option value="rhaz"> Rear Hazard Avoidance Camera</option>
+                <option value="mast">Mast Camera</option>
+                <option value="chemcam">Chemistry and Camera Complex</option>
+                <option value="mahli">Mars Hand Lens Imager</option>
+                <option value="mardi">Mars Descent Imager</option>
+                <option value="navcam">Navigation Camera</option>
+              </select>
+              <div className="buttonContainer">
+                <button className="buttonInstance" type="submit">
+                  Find Photos
+                </button>
+              </div>
+            </form>
           </div>
-          <div className="buttonContainer">
-            <button className="buttonInstance" type="submit">
-              Find Photos
-            </button>
-          </div>
-        </form>
-        <div className="strongBolded redText"> {searchError} </div>
-        <div className="strongBolded redText">{manifestError}</div>
-      </div>
-      {!searchError && photoData && pageNum !== null ? displayPhoto() : ""}
-      <div className="strongBolded">
-        {searchLoading && pageNum && "...Loading"}
-      </div>
-      <h2>
-        <div className="footerLink">
-          <a
-            href="https://github.com/AnimeshKC"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Animesh KC
-          </a>
+          <div className="strongBolded redText"> {searchError} </div>
+          <div className="strongBolded redText">{manifestError}</div>
         </div>
-        <div className="footerLink">
-          <a
-            className="footerLink"
-            href="https://api.nasa.gov/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            NASA APIs
-          </a>
+        {!searchError && photoData && pageNum !== null ? displayPhoto() : ""}
+        <div className="strongBolded">
+          {searchLoading && pageNum && <Spinner />}
         </div>
-      </h2>
+      </div>
+      <Footer />
     </div>
   )
 }

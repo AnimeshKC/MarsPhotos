@@ -1,0 +1,29 @@
+.footerTitle {
+  text-align: center;
+  margin: 10px;
+  color: grey;
+}
+.footerRowContainer {
+  display: flex;
+  justify-content: center;
+}
+.footerRow {
+  margin: 10px 20px;
+}
+.footer {
+  background-color: black;
+  margin: 10px 0px 0px;
+  padding: 10px 0px;
+}
+.footerLink {
+  margin: 10px 0;
+  color: #00f5e4;
+  text-decoration: none;
+}
+.footerLink:hover {
+  color: hotpink;
+}
+.nameStyle {
+  font-weight: 900;
+  font-size: 20px;
+}
