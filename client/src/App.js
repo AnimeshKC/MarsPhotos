@@ -143,7 +143,7 @@ function App() {
         <div className="textAndFormContainer">
           <div className="introductionContainer">
             <header>
-              <h1 className="appTitle">Mars Rover Photo Display</h1>
+              <h1 className="appTitle">Mars Rover Photos</h1>
             </header>
             {manifestData ? (
               <DataCountDisplay
