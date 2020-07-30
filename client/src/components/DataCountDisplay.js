@@ -7,7 +7,7 @@ export default function DataCountDisplay(props) {
   return (
     <div className="dataCountContainer">
       <div className="dataCountText">{`Search among ${totalPhotos} photos!`}</div>
-      <div className="dataCountText">{`Choose a sol (mission day) from 0 to ${maxSol}`}</div>
+      <div className="dataCountText">{`Choose a sol from 0 to ${maxSol}`}</div>
     </div>
   )
 }

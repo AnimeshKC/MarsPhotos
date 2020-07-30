@@ -1,17 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0px;
   padding: 0px;
+  font-family: "Open Sans", sans-serif;
 }
 .pageContainer {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: rgba(102, 85, 85, 0.822);
+  background-color: #5ec1cc;
 }
 .introductionContainer {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 .siteContent {
   flex: 1;
@@ -24,11 +31,14 @@ body {
   align-items: center;
 }
 .appTitle {
-  margin-top: 20px;
+  margin-top: 20px auto;
+  text-align: center;
 }
 .roverTitle {
-  margin: 20px auto;
+  margin: 0.3em auto 0 auto;
   font-size: 2em;
+  text-align: center;
+  color: #4f4f4f;
 }
 .photoContainer {
   display: grid;
@@ -45,25 +55,32 @@ body {
   font-weight: 900;
   font-size: 30px;
 }
+.noPhotos {
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+}
 .buttonContainer {
   margin: 10px 0px;
 }
-.buttonInstance {
-  margin: 10px 0px;
-  font-size: 1.2em;
-  background-color: #007bff;
+
+.formElements {
+  width: 265px;
 }
 .redText {
   color: red;
 }
+.smallText {
+  font-size: 0.8em;
+}
 .appFormContainer {
-  margin-top: 20px;
-  padding-left: 4.5em;
-  padding-right: 4.5em;
+  width: 300px;
+  padding: 0 1em;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  margin: 20px auto;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
   background-color: #fff;
 }
 .form {
@@ -74,10 +91,27 @@ body {
   width: 100%;
 }
 .form > label {
-  display: block;
-  font-weight: 700;
-  margin: 10px 0;
+  font-weight: 900;
 }
-.form > input {
+.form > input,
+.form > select,
+.form > label,
+.form > button,
+.form > div {
   display: block;
+  margin: 0.5em 0.2em 0.3em 0.3em;
+  box-sizing: border-box;
+}
+
+.buttonInstance {
+  margin-top: 0.2em;
+  margin-bottom: 0.8em;
+  margin-left: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: #007bff;
+  letter-spacing: 0.05em;
+}
+header {
+  color: #061f00;
 }

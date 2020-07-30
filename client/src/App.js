@@ -103,7 +103,7 @@ function App() {
     setPhotoRenderRequired(true)
   }
   function displayPhoto() {
-    const styleClass = photoData.length ? "photoContainer" : "strongBolded"
+    const styleClass = photoData.length ? "photoContainer" : "noPhotos"
     const messageString = searchLoading ? "" : "No photos found"
     return (
       <div className={styleClass}>
@@ -142,7 +142,9 @@ function App() {
       <div className="siteContent">
         <div className="textAndFormContainer">
           <div className="introductionContainer">
-            <h1 className="appTitle">Mars Rover Photo Display</h1>
+            <header>
+              <h1 className="appTitle">Mars Rover Photo Display</h1>
+            </header>
             {manifestData ? (
               <DataCountDisplay
                 totalPhotos={manifestData.photo_manifest.total_photos}
@@ -160,17 +162,19 @@ function App() {
             <h2 className="roverTitle">Curiosity Rover</h2>
 
             <form onSubmit={handleSubmit} className="form">
-              <label htmlFor="sol">Sol</label>
+              <label htmlFor="sol">Sol:</label>
               <input
+                className="formElements"
                 type="number"
                 name="solNum"
                 value={roverFormValues.solNum}
                 onChange={setRoverFormValues}
                 id="sol"
               ></input>
-              <div className="redText">{formErrors.solError}</div>
-              <label htmlFor="camera">Camera</label>
+              <div className="redText smallText">{formErrors.solError}</div>
+              <label htmlFor="camera">Camera:</label>
               <select
+                className="formElements"
                 name="cameraType"
                 id="camera"
                 value={setRoverFormValues.cameraType}
@@ -186,7 +190,7 @@ function App() {
                 <option value="navcam">Navigation Camera</option>
               </select>
               <div className="buttonContainer">
-                <button className="buttonInstance" type="submit">
+                <button className="buttonInstance formElements" type="submit">
                   Find Photos
                 </button>
               </div>
