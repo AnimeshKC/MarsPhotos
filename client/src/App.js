@@ -95,6 +95,8 @@ function App() {
 
   function handleSubmit(e) {
     e.preventDefault()
+    //submit does nothing before the manifestData has loaded
+    //in the case of improper validation, some render divs will take care of displaying the error
     if (!manifestData || !validateState()) return
     //at this point, there are no more errrors, so clear them
     setFormErrors(initialFormErrors)
